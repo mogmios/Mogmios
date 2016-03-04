@@ -7,105 +7,6 @@ namespace Mogmios {
   GreaterThan = 1
  }
 
- //#region Bases
-
- //public abstract class ValueBase : IValue {
- // public bool HasValue
- // {
- //  get
- //  {
- //   throw new NotImplementedException ();
- //  }
- // }
-
- // public object Value
- // {
- //  get
- //  {
- //   throw new NotImplementedException ();
- //  }
- // }
-
- // public int CompareTo ( IValue other ) {
- //  throw new NotImplementedException ();
- // }
-
- // public bool Equals ( IValue other ) {
- //  throw new NotImplementedException ();
- // }
- //}
-
- //public abstract class ValueBase<T> : ValueBase, IValue<T> {
- // public new T Value
- // {
- //  get
- //  {
- //   throw new NotImplementedException ();
- //  }
- // }
-
- // public int CompareTo ( IValue<T> other ) {
- //  throw new NotImplementedException ();
- // }
-
- // public bool Equals ( IValue<T> other ) {
- //  throw new NotImplementedException ();
- // }
- //}
-
- //public abstract class MutableValueBase : ValueBase, IMutableValue {
- // public new object Value
- // {
- //  get
- //  {
- //   throw new NotImplementedException ();
- //  }
-
- //  set
- //  {
- //   throw new NotImplementedException ();
- //  }
- // }
- //}
-
- //public abstract class MutableValueBase<T> : MutableValueBase, IMutableValue<T> {
- // public new T Value
- // {
- //  get
- //  {
- //   throw new NotImplementedException ();
- //  }
-
- //  set
- //  {
- //   throw new NotImplementedException ();
- //  }
- // }
-
- // public int CompareTo ( IValue<T> other ) {
- //  throw new NotImplementedException ();
- // }
-
- // public bool Equals ( IValue<T> other ) {
- //  throw new NotImplementedException ();
- // }
- //}
-
- //#endregion
-
- // static Boolean Parse ( string value );
- // static Boolean TryParse ( string value, out INumber result ) {
- // return false;
- //}
-
- //public static implicit operator ImmutableValue<T>( T value ) {
- // return ( new ImmutableValue<T> ( value ) );
- //}
-
- //public static implicit operator T ( ImmutableValue<T> value ) {
- // return value.Value;
- //}
-
  public class ImmutableValue : IValue {
   public ImmutableValue () : base () { }
 
@@ -239,9 +140,64 @@ namespace Mogmios {
   }
  }
 
- public class MutableValue : MutableValueBase {
+ public class MutableValue : ImmutableValue, IMutableValue {
+  public MutableValue ( object value ) : base ( value ) { }
+
+  public new object Value
+  {
+   get
+   {
+    return _Value;
+   }
+
+   set
+   {
+    _Value = value;
+   }
+  }
  }
 
- public class MutableValue<T> : MutableValueBase<T> {
+ public class MutableValue<T> : ImmutableValue<T>, IMutableValue<T> {
+  public MutableValue ( T value ) : base ( value ) {
+  }
+
+  object IMutableValue.Value
+  {
+   get
+   {
+    return Value;
+   }
+
+   set
+   {
+    Value = (T) value;
+   }
+  }
+
+  public new T Value
+  {
+   get
+   {
+    return (T) _Value;
+   }
+
+   set
+   {
+    _Value = value;
+   }
+  }
  }
 }
+
+// static Boolean Parse ( string value );
+// static Boolean TryParse ( string value, out INumber result ) {
+// return false;
+//}
+
+//public static implicit operator ImmutableValue<T>( T value ) {
+// return ( new ImmutableValue<T> ( value ) );
+//}
+
+//public static implicit operator T ( ImmutableValue<T> value ) {
+// return value.Value;
+//}
